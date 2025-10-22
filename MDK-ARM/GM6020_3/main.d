@@ -34,3 +34,4 @@ gm6020_3\main.o: ../Core/Inc/can.h
 gm6020_3\main.o: ../Core/Inc/usart.h
 gm6020_3\main.o: ../Core/Inc/gpio.h
 gm6020_3\main.o: C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\math.h
+gm6020_3\main.o: C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdbool.h

@@ -1,7 +1,7 @@
 Dependencies for Project 'GM6020_3', Target 'GM6020_3': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 for Certification (build 960)::.\ARM_Compiler_5.06u7
 F (startup_stm32f405xx.s)(0x68F8A5D9)(--cpu Cortex-M4.fp.sp -g --apcs=interwork -I.\RTE\_GM6020_3-IC:\Users\runze\AppData\Local\Arm\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 538" --pd "_RTE_ SETA 1" --pd "STM32F405xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f405xx.lst --xref -o gm6020_3\startup_stm32f405xx.o --depend gm6020_3\startup_stm32f405xx.d)
-F (../Core/Src/main.c)(0x68F8D9DD)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_GM6020_3-IC:\Users\runze\AppData\Local\Arm\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F405xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F405xx-o gm6020_3\main.o --omf_browse gm6020_3\main.crf --depend gm6020_3\main.d)
+F (../Core/Src/main.c)(0x68F8F1EA)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_GM6020_3-IC:\Users\runze\AppData\Local\Arm\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F405xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F405xx-o gm6020_3\main.o --omf_browse gm6020_3\main.crf --depend gm6020_3\main.d)
 I (../Core/Inc/main.h)(0x68F799CF)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x68F3043B)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x68F8A4F6)
@@ -36,6 +36,7 @@ I (../Core/Inc/can.h)(0x68F799CE)
 I (../Core/Inc/usart.h)(0x68F8A4F5)
 I (../Core/Inc/gpio.h)(0x68F799CE)
 I (C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\math.h)(0x5E8E3CC2)
+I (C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdbool.h)(0x5E8E3CC2)
 F (../Core/Src/gpio.c)(0x68F8A4F5)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_GM6020_3-IC:\Users\runze\AppData\Local\Arm\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F405xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F405xx-o gm6020_3\gpio.o --omf_browse gm6020_3\gpio.crf --depend gm6020_3\gpio.d)
 I (../Core/Inc/gpio.h)(0x68F799CE)
 I (../Core/Inc/main.h)(0x68F799CF)
