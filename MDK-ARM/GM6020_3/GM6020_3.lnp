@@ -3,6 +3,7 @@
 "gm6020_3\main.o"
 "gm6020_3\gpio.o"
 "gm6020_3\can.o"
+"gm6020_3\usart.o"
 "gm6020_3\stm32f4xx_it.o"
 "gm6020_3\stm32f4xx_hal_msp.o"
 "gm6020_3\stm32f4xx_hal_can.o"
@@ -19,6 +20,7 @@
 "gm6020_3\stm32f4xx_hal_cortex.o"
 "gm6020_3\stm32f4xx_hal.o"
 "gm6020_3\stm32f4xx_hal_exti.o"
+"gm6020_3\stm32f4xx_hal_uart.o"
 "gm6020_3\system_stm32f4xx.o"
 --strict --scatter "GM6020_3\GM6020_3.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

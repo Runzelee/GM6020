@@ -28,10 +28,15 @@ Project File Date:  10/22/2025
 *** Using Compiler 'V5.06 update 7 for Certification (build 960)', folder: 'C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin'
 Build target 'GM6020_3'
 compiling main.c...
+../Core/Src/main.c(196): warning:  #223-D: function "sprintf" declared implicitly
+      sprintf((char *)TxData, "%.2f, %.2f, %.2f\r\n", velocity, error, pid_output);
+../Core/Src/main.c(197): warning:  #223-D: function "strlen" declared implicitly
+      HAL_UART_Transmit(&huart3, TxData, strlen((char *)TxData), 1000);
+../Core/Src/main.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=5876 RO-data=464 RW-data=44 ZI-data=1676  
+Program Size: Code=12308 RO-data=648 RW-data=44 ZI-data=1748  
 FromELF: creating hex file...
-"GM6020_3\GM6020_3.axf" - 0 Error(s), 0 Warning(s).
+"GM6020_3\GM6020_3.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 

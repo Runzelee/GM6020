@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -45,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-float angle;
+float velocity;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,14 +62,14 @@ extern CAN_HandleTypeDef hcan1;
 const uint32_t CAN_CMD_ID = 0x1ff;
 
 /* ---------------- PID parameters & state ---------------- */
-static const float Kp = 1.0f;     // 比例
-static const float Ki = 1.0f;    // 积分
-static const float Kd = 1.0f;     // 微分（最简单可以先设为0）
+static const float Kp = 30.0f;     // 比例
+static const float Ki = 0.0f;    // 积分
+static const float Kd = 0.0f;     // 微分（最简单可以先设为0）
 static const float SAMPLE_DT = 0.05f; // 主循环延时 50 ms
 
 static float pid_integral = 0.0f;
 static float pid_prev_error = 0.0f;
-static const int16_t MAX_VOLTAGE = 10000; // 输出电压上限，可按需调整
+static const int16_t MAX_VOLTAGE = 20000; // 输出电压上限，可按需调整
 
 /* ---------------- For Debug ---------------- */
 float error, derivative, pid_output;
@@ -125,7 +126,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
         uint8_t RxData[8];
         if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)  // 获得接收到的数据头和数据
         {
-            angle = ((RxData[0] << 8) | RxData[1]);
+            // 速度为有符号 int16，发送时高字节放在 RxData[2], 低字节放在 RxData[3]
+            int16_t raw = (int16_t)(((uint16_t)RxData[2] << 8) | (uint16_t)RxData[3]);
+            velocity = (float)raw;
         }
     }
     HAL_CAN_ActivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);  // 再次使能FIFO0接收中断
@@ -163,6 +166,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   
 
@@ -172,8 +176,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   Enable_CAN1();
 
-  /* 设定目标角度（0-8191) */
-  float setpoint = 10.0f;
+  /* 设定目标速度（rpm） */
+  float setpoint = 4000.0f;
 
   while (1)
   {
@@ -181,13 +185,16 @@ int main(void)
     HAL_Delay((uint32_t)(SAMPLE_DT * 1000)); // 50 ms
 
     // PID 控制
-    error = setpoint - angle;
+    error = setpoint - velocity;
     pid_integral += error * SAMPLE_DT;
     derivative = (error - pid_prev_error) / SAMPLE_DT;
 
     pid_output = Kp * error + Ki * pid_integral + Kd * derivative;
 
     pid_prev_error = error;
+    uint8_t TxData[50];
+    sprintf((char *)TxData, "%.2f, %.2f, %.2f\r\n", velocity, error, pid_output);
+    HAL_UART_Transmit(&huart3, TxData, strlen((char *)TxData), 1000);
 
     // 限幅并转为 int16_t（驱动期望的电压范围）
     if (pid_output > MAX_VOLTAGE) pid_output = MAX_VOLTAGE;

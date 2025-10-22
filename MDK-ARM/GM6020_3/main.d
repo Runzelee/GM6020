@@ -29,6 +29,8 @@ gm6020_3\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 gm6020_3\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 gm6020_3\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 gm6020_3\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+gm6020_3\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 gm6020_3\main.o: ../Core/Inc/can.h
+gm6020_3\main.o: ../Core/Inc/usart.h
 gm6020_3\main.o: ../Core/Inc/gpio.h
 gm6020_3\main.o: C:\Users\runze\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\math.h
