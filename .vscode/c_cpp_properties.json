@@ -8,6 +8,7 @@
                 "c:\\Users\\runze\\work\\robomaster\\STM32-Design\\GM6020_3\\Drivers\\STM32F4xx_HAL_Driver\\Inc\\Legacy",
                 "c:\\Users\\runze\\work\\robomaster\\STM32-Design\\GM6020_3\\Drivers\\CMSIS\\Device\\ST\\STM32F4xx\\Include",
                 "c:\\Users\\runze\\work\\robomaster\\STM32-Design\\GM6020_3\\Drivers\\CMSIS\\Include",
+                "c:\\Users\\runze\\work\\robomaster\\STM32-Design\\GM6020_3\\Core\\User",
                 "C:\\Users\\runze\\AppData\\Local\\Keil_v5\\ARM\\ARMCLANG\\include",
                 "C:\\Users\\runze\\AppData\\Local\\Keil_v5\\ARM\\ARMCLANG\\include\\arm_linux",
                 "C:\\Users\\runze\\AppData\\Local\\Keil_v5\\ARM\\ARMCLANG\\include\\arm_linux_compat",

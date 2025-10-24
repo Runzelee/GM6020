@@ -25,8 +25,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include <math.h>
-#include <stdbool.h>
+#include "gm6020_double_pid.h"
+#include "gm6020_single_pid.h"
+#include "gm6020_can.h"
 
 /* USER CODE END Includes */
 
@@ -48,13 +49,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-float velocity;
-float angle;                // 实时角度（来自 CAN RxData[0..1]）
-
-/* Deadband / hysteresis for angle loop */
-static const float ANG_DEAD_ENTER = 100.0f;  // 进入死区阈值 (ticks)
-static const float ANG_DEAD_EXIT  = 500.0f;  // 退出死区阈值 (ticks)
-static bool hold_position = false;         // 在死区内则保持不输出，直到误差超过退出阈值
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,96 +59,6 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-extern CAN_HandleTypeDef hcan1;
-const uint32_t CAN_CMD_ID = 0x1ff;
-
-/* ---------------- PID parameters & state ---------------- */
-static const float Kp = 15.0f;     // 比例 (速度环)
-static const float Ki = 5.0f;    // 积分 (速度环)
-static const float Kd = 0.0f;     // 微分（速度环）
-static const float SAMPLE_DT = 0.05f; // 主循环延时 50 ms
-
-static float pid_integral = 0.0f;
-static float pid_prev_error = 0.0f;
-static const int16_t MAX_VOLTAGE = 20000; // 输出电压上限，可按需调整
-
-/* --------- 角度外环 PID 参数与状态（产生速度设定） --------- */
-static const float Kp_ang = 20.0f;    // 比例 (角度环)
-static const float Ki_ang = 5.0f;    // 积分 (角度环)
-static const float Kd_ang = 0.0f;    // 微分 (角度环)
-
-static float ang_integral = 0.0f;
-static float ang_prev_error = 0.0f;
-static const float MAX_TARGET_VEL = 200.0f; // 角度环输出速度上限（rpm），按需调整
-
-/* ---------------- For Debug ---------------- */
-float error, derivative, pid_output;
-int16_t send_vol;
-
-/* ------------------------------ 初始化（配置过滤器）4------------------------------ */
-void Enable_CAN1(void)
-{
-    CAN_FilterTypeDef CAN_Filter;
-    CAN_Filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-    CAN_Filter.FilterScale = CAN_FILTERSCALE_32BIT;
-    CAN_Filter.FilterBank = 0;
-    CAN_Filter.FilterMode = CAN_FILTERMODE_IDMASK;
-    CAN_Filter.SlaveStartFilterBank = 0;
-    CAN_Filter.FilterActivation = CAN_FILTER_ENABLE;
-    CAN_Filter.FilterIdHigh = 0x0000;
-    CAN_Filter.FilterIdLow = 0x0000;
-    CAN_Filter.FilterMaskIdHigh= 0x0000;
-    CAN_Filter.FilterMaskIdLow = 0x0000;
-    if (HAL_CAN_ConfigFilter(&hcan1,&CAN_Filter)!= HAL_OK){
-        //HAL_GPIO_WritePin(Red_GPIO_Port,Red_Pin,GPIO_PIN_SET);
-        Error_Handler();
-    }
-    HAL_CAN_Start(&hcan1);
-    HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);  // CAN1 -> FIFO0
-}
-
-/* ------------------------------ 发送函数 ------------------------------ */
-void Set_GM6020_Voltage(int16_t vol)
-{
-    uint8_t TxData[8] = {0}; // 清零
-    TxData[2] = (uint8_t)(vol>>8);
-    TxData[3] = (uint8_t)vol;
-    CAN_TxHeaderTypeDef TxHeader = {
-            .DLC = 8,
-            .IDE = CAN_ID_STD,    // 标准帧
-            .RTR = CAN_RTR_DATA,  // 数据帧
-            .StdId = CAN_CMD_ID
-    };
-    uint32_t TxBox = CAN_TX_MAILBOX0;
-    if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxBox) != HAL_OK){
-        //HAL_GPIO_WritePin(Red_GPIO_Port,Red_Pin,GPIO_PIN_SET);//错误处理
-    }
-}
-
-
-
-/* ------------------------------------------ 接收函数 ------------------------------------------ */
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
-{
-    if (hcan == &hcan1)
-    {
-        CAN_RxHeaderTypeDef RxHeader;
-        uint8_t RxData[8];
-        if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)  // 获得接收到的数据头和数据
-        {
-            // 角度为无符号 0..8191（13-bit），高字节在 RxData[0], 低字节在 RxData[1]
-            uint16_t raw_angle = (uint16_t)(((uint16_t)RxData[0] << 8) | (uint16_t)RxData[1]);
-            raw_angle &= 0x1FFF; // 保证 13-bit（0..8191）
-            angle = (float)raw_angle;
-
-            // 速度为有符号 int16，高字节放在 RxData[2], 低字节放在 RxData[3]
-            int16_t raw_vel = (int16_t)(((uint16_t)RxData[2] << 8) | (uint16_t)RxData[3]);
-            velocity = (float)raw_vel;
-        }
-    }
-    HAL_CAN_ActivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);  // 再次使能FIFO0接收中断
-}
 
 /* USER CODE END 0 */
 
@@ -196,88 +100,21 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
+  //GM6020_CAN_RegisterAngleVelocityCallback(Double_PID_Handler);
+  GM6020_CAN_RegisterAngleVelocityCallback(Single_PID_Handler);
   Enable_CAN1();
-
-  /* 设定目标角度（单位：0..8191 绝对刻度） */
-  float setpoint_angle = 3000.0f; // 可改为动态输入
+  
 
   while (1)
   {
-    // 在循环开始或结束保持与 SAMPLE_DT 对齐
-    HAL_Delay((uint32_t)(SAMPLE_DT * 1000)); // 50 ms
-
-    /* -------- 外环：角度 PID（环绕误差），产生速度设定（rpm） -------- */
-    // 规范化目标到 [0,8192)
-    float sp = fmodf(setpoint_angle, 8192.0f);
-    if (sp < 0.0f) sp += 8192.0f;
-
-    // 环绕最短差，结果范围为 (-4096, +4096]
-    float ang_error = sp - angle;
-    if (ang_error > 4096.0f) ang_error -= 8192.0f;
-    else if (ang_error <= -4096.0f) ang_error += 8192.0f;
-
-    /* 死区 + 滞回逻辑：误差小于 ANG_DEAD_ENTER 进入保持（停止输出），
-       保持状态下误差超过 ANG_DEAD_EXIT 才退出保持 */
-    if (hold_position) {
-        if (fabsf(ang_error) > ANG_DEAD_EXIT) {
-            hold_position = false; // 恢复控制
-        }
-    } else {
-        if (fabsf(ang_error) < ANG_DEAD_ENTER) {
-            hold_position = true; // 进入保持
-        }
-    }
-
-    if (hold_position) {
-        // 清零外/内环积分以防止积分风up，并保持输出为 0
-        ang_integral = 0.0f;
-        ang_prev_error = ang_error;
-        pid_integral = 0.0f;
-        pid_prev_error = 0.0f;
-
-        float vel_setpoint = 0.0f;
-        /* 直接发送 0 输出（位置保持）——后面分支会处理发送 0 电压 */
-        pid_output = 0.0f;
-    } else {
-        ang_integral += ang_error * SAMPLE_DT;
-        float ang_derivative = (ang_error - ang_prev_error) / SAMPLE_DT;
-        float vel_setpoint = Kp_ang * ang_error + Ki_ang * ang_integral + Kd_ang * ang_derivative;
-        ang_prev_error = ang_error;
-
-        // 限幅外环输出到合理的速度范围
-        if (vel_setpoint > MAX_TARGET_VEL) vel_setpoint = MAX_TARGET_VEL;
-        if (vel_setpoint < -MAX_TARGET_VEL) vel_setpoint = -MAX_TARGET_VEL;
-
-        /* -------- 内环：速度 PID（原有逻辑），使用 vel_setpoint -------- */
-        error = vel_setpoint - velocity;
-        pid_integral += error * SAMPLE_DT;
-        derivative = (error - pid_prev_error) / SAMPLE_DT;
-
-        pid_output = Kp * error + Ki * pid_integral + Kd * derivative;
-
-        pid_prev_error = error;
-    }
-
-    /* 无论是否保持，最终输出限幅并发送；保持时 pid_output 已为 0 */
-    uint8_t TxData[80];
-    sprintf((char *)TxData, "%.2f, %.2f, %.2f, %.2f, %.2f, %d\r\n",
-            angle, ang_error, (hold_position?0.0f: (float)0.0f), velocity, pid_output, hold_position?1:0);
-    HAL_UART_Transmit(&huart3, TxData, strlen((char *)TxData), 1000);
-
-    // 限幅并转为 int16_t（驱动期望的电压范围）
-    if (pid_output > MAX_VOLTAGE) pid_output = MAX_VOLTAGE;
-    if (pid_output < -MAX_VOLTAGE) pid_output = -MAX_VOLTAGE;
-
-    send_vol = (int16_t)roundf(pid_output);
-
-    Set_GM6020_Voltage(send_vol);
-    //Set_GM6020_Voltage(8000);
-  }
+    //Double_PID_ToAngle((float)3000 + 8192*3);
+    Single_PID_ToVelocity(150.0f);
 
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
-  
+  }
+
   /* USER CODE END 3 */
 }
 

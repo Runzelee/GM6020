@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F405xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Core\User</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -619,6 +619,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>User</GroupName>
+          <Files>
+            <File>
+              <FileName>gm6020_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\User\gm6020_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>gm6020_double_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\User\gm6020_double_pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>gm6020_single_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\User\gm6020_single_pid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -637,5 +657,14 @@
     </components>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>GM6020_3</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>
