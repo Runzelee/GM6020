@@ -1,0 +1,81 @@
+########################################
+# VSCode Configuration
+########################################
+.vscode/
+
+########################################
+# Keil User/IDE State Files
+########################################
+*.opt
+*.uvopt
+*.uvoptx
+*.uvgui
+*.uvgui.*
+*.uvguix.*
+
+########################################
+# Keil Build Output
+########################################
+*.axf
+*.elf
+*.hex
+*.bin
+*.out
+
+# Objects & temp
+*.o
+*.obj
+*.d
+*.crf
+*.dep
+*.lnp
+*.lst
+*.map
+*.cod
+*.m51
+*.m66
+*.i
+*.h86
+*.lib
+*.sbr
+
+########################################
+# Keil Build Directories
+########################################
+# MDK-ARM
+MDK-ARM/DebugConfig/
+MDK-ARM/RTE/
+MDK-ARM/*/Objects/
+MDK-ARM/*/Listings/
+MDK-ARM/*/Debug/
+MDK-ARM/*/*.buildlog.htm
+
+########################################
+# STM32CubeMX
+########################################
+*.ioc-backup
+
+########################################
+# Misc Intermediate Files
+########################################
+*.ic
+*.lin
+*.orc
+*.sct
+*.sfd
+*.sfr
+*.plg
+*.pdsc
+*.pack
+*.ini
+*.log
+*.tmp
+*.scr
+*.bak
+*.build_log.htm
+
+########################################
+# OS / Editor Trash
+########################################
+Thumbs.db
+.DS_Store

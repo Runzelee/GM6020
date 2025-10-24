@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "gm6020_double_pid.h": "c",
-        "*.bak": "c",
-        "gm6020_single_pid.h": "c",
-        "gm6020_can.h": "c",
-        "stdint.h": "c"
-    }
-}
